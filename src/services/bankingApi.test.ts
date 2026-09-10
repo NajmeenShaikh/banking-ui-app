@@ -7,7 +7,11 @@ describe("bankingApi", () => {
 
     expect(dashboard.account.id).toBe("ACC-001");
     expect(dashboard.account.currency).toBe("INR");
-    expect(dashboard.transactions.length).toBeGreaterThan(0);
-    expect(dashboard.transactions[0]).toHaveProperty("id");
+    expect(dashboard.transactions).toHaveLength(4);
+    expect(dashboard.transactions[0]).toMatchObject({
+      id: "TXN-1001",
+      type: "DEBIT",
+      status: "SUCCESS",
+    });
   });
 });
