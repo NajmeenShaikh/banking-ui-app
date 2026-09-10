@@ -2,19 +2,37 @@ import { AccountCard } from "./components/AccountCard";
 import { StatCard } from "./components/StatCard";
 import { TransactionTable } from "./components/TransactionTable";
 import { useDashboard } from "./hooks/useDashboard";
-import "./styles.css";
+// import "./styles.css";
 
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
-console.log('sfdfffsd')
+
 export default function App() {
   const { data, isLoading, error, retry } = useDashboard();
 
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <a className="brand" href="/" aria-label="SecureBank home">Secure<span>Bank</span></a>
-        <div className="user-menu" aria-label="Signed in user">NS <span>Personal banking</span></div>
-      </header>
+      
+<header className="topbar">
+  <a className="brand" href="/" aria-label="SecureBank home">
+    Secure<span>Bank</span>
+  </a>
+
+  <div className="user-menu" aria-label="Signed in user">
+    NS <span>Personal banking</span>
+  </div>
+
+  {data && (
+    <button
+      className="notification-button"
+      type="button"
+      aria-label={`Notifications, ${data.notifications} unread`}
+    >
+      Notifications
+    </button>
+  )}
+</header>
+
+
 
       <main className="content">
         <section className="hero" aria-labelledby="page-title">
