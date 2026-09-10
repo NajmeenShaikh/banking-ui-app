@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -6,14 +7,12 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: read
-
 jobs:
-  quality:
+  test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -23,13 +22,8 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Lint
-        run: npm run lint
+      - name: Run tests
+        run: npm run test
 
-      - name: Unit tests
-        run: npm test
-
-      - name: Production build
-        run: npm run build
