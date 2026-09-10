@@ -1,4 +1,4 @@
-```json
+
 {
   "name": "banking-ui-app",
   "private": true,
@@ -40,4 +40,3 @@
     "vite": "npm:rolldown-vite@7.2.5"
   }
 }
-```
