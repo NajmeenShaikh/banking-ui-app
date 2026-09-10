@@ -44,10 +44,9 @@ describe("TransactionTable", () => {
     expect(screen.queryByText("Amazon India")).not.toBeInTheDocument();
   });
 
-  it("shows an empty state when no transactions match", () => {
-    render(<TransactionTable transactions={transactions} />);
+  it("shows an empty state when the supplied transaction list is empty", () => {
+    render(<TransactionTable transactions={[]} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Debit" }));
-    expect(screen.getByRole("button", { name: "Credit" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByText("No transactions match this filter.")).toBeInTheDocument();
   });
 });
