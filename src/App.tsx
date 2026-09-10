@@ -5,7 +5,7 @@ import { useDashboard } from "./hooks/useDashboard";
 import "./styles.css";
 
 const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
-
+console.log('sfdfffsd')
 export default function App() {
   const { data, isLoading, error, retry } = useDashboard();
 
