@@ -31,10 +31,13 @@ The current repository uses a small mock service to keep the portfolio applicati
 
 ## Testing strategy
 
-The test suite covers both user-facing behavior and the API boundary:
+The test suite covers both user-facing behavior and the service/API boundary:
 
 - Dashboard loading state and successful content rendering
-- Accessible notification state
+- Banking summary metrics
+- Accessible transaction filter states
+- Debit and credit transaction filtering
+- Empty transaction state
 - Banking service response contract
 - Stable transaction data availability
 
