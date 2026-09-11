@@ -9,8 +9,11 @@ A production-style banking dashboard UI built to demonstrate React frontend engi
 - Service-layer separation for API integration
 - Functional transfer workflow: beneficiary → amount → validation → review → confirmation → success/failure
 - Transfer validation and demo transaction receipt handling
+- Transaction search across merchant, category and transaction ID
+- Transaction type and status filters with derived state via `useMemo`
+- Pagination with reset-on-filter/search behavior
+- Transaction detail dialog with accessible close action
 - Loading, error and retry states
-- Transaction filtering with stable IDs
 - Responsive design for desktop and mobile
 - Semantic HTML and keyboard-visible focus states
 - Accessible status, alert, dialog and table patterns
@@ -22,11 +25,11 @@ A production-style banking dashboard UI built to demonstrate React frontend engi
 ```text
 UI Components
       ↓
-useDashboard()       TransferMoney()
-      ↓                    ↓
-      └──── Service Layer ──┘
-               ↓
-       REST API / Banking Backend
+useDashboard()       TransferMoney()       TransactionTable()
+      ↓                    ↓                       ↓
+      └────────────── Service / Domain Layer ─────┘
+                               ↓
+                       REST API / Banking Backend
 ```
 
 The current repository uses small mock services to keep the portfolio application self-contained. A production integration can replace the service implementations with authenticated REST calls without coupling API logic to the UI.
@@ -46,6 +49,18 @@ The transfer feature demonstrates a realistic frontend business flow:
 
 The transfer service also generates an idempotency key in the demo client request shape. In a real banking system, the backend must enforce idempotency and authorization; the frontend cannot be the security boundary.
 
+## Transaction experience
+
+The transaction table intentionally keeps the original transaction collection as the source of truth and derives the visible result from UI state. Users can:
+
+- Search by merchant, category or transaction ID.
+- Filter by debit, credit or all transaction types.
+- Filter by success, pending or failed status.
+- Navigate through paginated results.
+- Open an individual transaction detail dialog without duplicating transaction state.
+
+This gives a practical interview example for discussing `useMemo`, derived state, stable keys, pagination boundaries and accessible UI state.
+
 ## Testing strategy
 
 The test suite covers both user-facing behavior and the service boundary:
@@ -54,6 +69,9 @@ The test suite covers both user-facing behavior and the service boundary:
 - Banking summary metrics
 - Accessible transaction filter states
 - Debit and credit transaction filtering
+- Search and status filtering
+- Pagination controls
+- Transaction detail dialog
 - Transfer validation rules
 - Transfer review and confirmation flow
 - Successful transfer receipt
@@ -69,7 +87,7 @@ npm run test:watch
 ## Suggested production API contract
 
 - `GET /api/accounts`
-- `GET /api/transactions?page=1&pageSize=25&type=DEBIT`
+- `GET /api/transactions?page=1&pageSize=25&type=DEBIT&status=SUCCESS&search=amazon`
 - `GET /api/notifications`
 - `GET /api/beneficiaries`
 - `POST /api/transfers`
@@ -106,7 +124,7 @@ npm run build
 
 ## Portfolio positioning
 
-This project is designed to complement the author's fund-transfer workflow, EMI calculator, TypeScript banking domain work, and React/TypeScript banking dashboard. It focuses specifically on polished banking UI, reusable components, realistic frontend business workflows, accessibility, responsive behavior, automated testing, and a clean API boundary.
+This project is designed to complement the author's fund-transfer workflow, EMI calculator, TypeScript banking domain work, and React/TypeScript banking dashboard. It focuses specifically on polished banking UI, reusable components, realistic frontend business workflows, derived-state filtering, pagination, accessibility, responsive behavior, automated testing, and a clean API boundary.
 
 ## Author
 
