@@ -1,87 +1,105 @@
-# SecureBank UI — React + TypeScript
+# SecureBank UI — Premium React + TypeScript Banking Experience
 
-A production-style banking dashboard UI built to demonstrate React frontend engineering for BFSI/FinTech use cases.
+A production-style, interactive banking dashboard built to demonstrate React frontend engineering for BFSI/FinTech use cases.
 
 ## What this project demonstrates
 
+- Premium responsive banking dashboard UI
 - React + TypeScript component architecture
-- Strict domain models for accounts and transactions
-- Service-layer separation for API integration
+- Smart account balance visibility interaction
+- Quick-action banking shortcuts
+- Light/dark theme interaction
+- Financial overview with spending categories and rule-based insights
 - Functional transfer workflow: beneficiary → amount → validation → review → confirmation → success/failure
-- Transfer validation and demo transaction receipt handling
 - Transaction search across merchant, category and transaction ID
 - Transaction type and status filters with derived state via `useMemo`
 - Pagination with reset-on-filter/search behavior
-- Transaction detail dialog with accessible close action
+- Transaction detail dialog
 - Loading, error and retry states
-- Responsive design for desktop and mobile
+- Responsive desktop, tablet and mobile layouts
 - Semantic HTML and keyboard-visible focus states
 - Accessible status, alert, dialog and table patterns
 - Automated UI and service tests with Vitest + React Testing Library
 - ESLint and GitHub Actions quality checks
 
+## Premium UI experience
+
+The dashboard is intentionally designed as a realistic fintech product rather than a static collection of cards.
+
+### Interactive experience
+
+- Hide/show available balance.
+- Switch between light and dark themes.
+- Open the transfer workflow from the hero CTA or Quick Actions.
+- Search and filter transaction activity.
+- Open transaction details without duplicating transaction state.
+- Review spending categories and rule-based financial insights.
+- Responsive navigation collapses into a mobile menu.
+
+### Smart dashboard
+
+The financial overview derives insights from the existing transaction source of truth:
+
+- Income versus spending snapshot
+- Estimated savings rate
+- Spending by category
+- Rule-based spending guidance
+- Upcoming/attention-oriented banking information through dashboard summary states
+
+These insights are intentionally deterministic demo logic, not a claim of AI processing. A production application could replace the insight calculation with a backend analytics or AI service.
+
 ## Architecture
 
 ```text
-UI Components
-      ↓
-useDashboard()       TransferMoney()       TransactionTable()
-      ↓                    ↓                       ↓
-      └────────────── Service / Domain Layer ─────┘
-                               ↓
-                       REST API / Banking Backend
+Premium UI
+   ↓
+Reusable React Components
+   ↓
+UI State + Derived State
+   ↓
+Service / Domain Layer
+   ↓
+REST API / Banking Backend
 ```
 
 The current repository uses small mock services to keep the portfolio application self-contained. A production integration can replace the service implementations with authenticated REST calls without coupling API logic to the UI.
 
 ## Transfer workflow
 
-The transfer feature demonstrates a realistic frontend business flow:
-
-1. Open **Transfer money** from the dashboard.
+1. Open **Transfer money**.
 2. Select a saved beneficiary.
 3. Enter an INR amount.
 4. Validate beneficiary, amount, transfer limit and available balance.
-5. Review the beneficiary and amount before submission.
-6. Confirm the transfer and show a processing state.
-7. Display a success receipt with a transaction reference, or a recoverable failure state.
+5. Review the transfer.
+6. Confirm and show a processing state.
+7. Display a success receipt or recoverable failure state.
 8. Update the demo dashboard balance and transaction list locally after success.
 
-The transfer service also generates an idempotency key in the demo client request shape. In a real banking system, the backend must enforce idempotency and authorization; the frontend cannot be the security boundary.
+In a real banking system, backend authorization, transaction limits, idempotency and execution remain server responsibilities.
 
 ## Transaction experience
 
-The transaction table intentionally keeps the original transaction collection as the source of truth and derives the visible result from UI state. Users can:
+The transaction table keeps the original transaction collection as the source of truth and derives the visible result from UI state. Users can:
 
 - Search by merchant, category or transaction ID.
 - Filter by debit, credit or all transaction types.
 - Filter by success, pending or failed status.
-- Navigate through paginated results.
-- Open an individual transaction detail dialog without duplicating transaction state.
+- Navigate paginated results.
+- Open an individual transaction detail dialog.
 
-This gives a practical interview example for discussing `useMemo`, derived state, stable keys, pagination boundaries and accessible UI state.
+This provides practical interview examples for `useMemo`, derived state, stable keys, pagination boundaries and accessible UI state.
 
 ## Testing strategy
 
-The test suite covers both user-facing behavior and the service boundary:
+The suite covers dashboard rendering, accessible filtering, transaction search/detail behavior, pagination, transfer validation, transfer confirmation and the service boundary.
 
-- Dashboard loading and successful content rendering
-- Banking summary metrics
-- Accessible transaction filter states
-- Debit and credit transaction filtering
-- Search and status filtering
-- Pagination controls
-- Transaction detail dialog
-- Transfer validation rules
-- Transfer review and confirmation flow
-- Successful transfer receipt
-- Banking service response contract
-
-Run tests locally with:
+Run locally:
 
 ```bash
 npm test
 npm run test:watch
+npm run lint
+npm run build
 ```
 
 ## Suggested production API contract
@@ -106,25 +124,15 @@ interface TransferRequest {
 
 ## Security considerations
 
-This is a portfolio/demo UI and does not process real money or store credentials. In a production banking system, authorization, transaction limits, validation, idempotency, audit logging and sensitive-data protection must be enforced server-side.
+This is a portfolio/demo UI and does not process real money or store credentials. In production, authorization, validation, transaction limits, idempotency, audit logging and sensitive-data protection must be enforced server-side.
 
 ## Quality checks
 
 GitHub Actions is configured to run linting, automated tests and the production build on pushes and pull requests targeting `main`.
 
-## Run locally
-
-```bash
-npm install
-npm run dev
-npm run lint
-npm test
-npm run build
-```
-
 ## Portfolio positioning
 
-This project is designed to complement the author's fund-transfer workflow, EMI calculator, TypeScript banking domain work, and React/TypeScript banking dashboard. It focuses specifically on polished banking UI, reusable components, realistic frontend business workflows, derived-state filtering, pagination, accessibility, responsive behavior, automated testing, and a clean API boundary.
+This project demonstrates the combination of visual product thinking and frontend engineering: polished fintech UI, reusable React components, realistic business workflows, derived state, accessibility, responsive behavior, automated testing and a clean API boundary.
 
 ## Author
 
