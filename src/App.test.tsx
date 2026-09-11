@@ -10,6 +10,8 @@ describe("SecureBank dashboard", () => {
     expect(await screen.findByRole("heading", { name: /good morning, nazmeen/i })).toBeInTheDocument();
     expect(await screen.findByText(/available balance/i)).toBeInTheDocument();
     expect(await screen.findByRole("table")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /september snapshot/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /smart insight/i })).toBeInTheDocument();
   });
 
   it("filters transactions and keeps the selected filter accessible", async () => {
@@ -46,10 +48,17 @@ describe("SecureBank dashboard", () => {
     expect(screen.getByText(/₹5,000 sent to Aarav Mehta/i)).toBeInTheDocument();
   });
 
-  it("renders dashboard notification summary", async () => {
+  it("toggles the account balance visibility and renders dashboard notification summary", async () => {
+    const user = userEvent.setup();
     render(<App />);
     await screen.findByRole("heading", { name: /good morning, nazmeen/i });
+
+    const hideButton = screen.getByRole("button", { name: "Hide balance" });
+    expect(screen.getByText(/₹128,450.75/)).toBeInTheDocument();
+    await user.click(hideButton);
+    expect(screen.getByText("₹ ••••••")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Show balance" })).toBeInTheDocument();
     expect(screen.getByText("Notifications")).toBeInTheDocument();
-    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getAllByText("3").length).toBeGreaterThanOrEqual(1);
   });
 });
