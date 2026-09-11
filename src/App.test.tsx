@@ -6,15 +6,8 @@ import App from "./App";
 describe("SecureBank dashboard", () => {
   it("renders loading state and then dashboard content", async () => {
     render(<App />);
-
     expect(screen.getByRole("status")).toBeInTheDocument();
-
-    expect(
-      await screen.findByRole("heading", {
-        name: /good morning, nazmeen/i,
-      }),
-    ).toBeInTheDocument();
-
+    expect(await screen.findByRole("heading", { name: /good morning, nazmeen/i })).toBeInTheDocument();
     expect(await screen.findByText(/available balance/i)).toBeInTheDocument();
     expect(await screen.findByRole("table")).toBeInTheDocument();
   });
@@ -22,32 +15,40 @@ describe("SecureBank dashboard", () => {
   it("filters transactions and keeps the selected filter accessible", async () => {
     const user = userEvent.setup();
     render(<App />);
-
-    await screen.findByRole("heading", {
-      name: /good morning, nazmeen/i,
-    });
+    await screen.findByRole("heading", { name: /good morning, nazmeen/i });
 
     const debitButton = screen.getByRole("button", { name: "Debit" });
     await user.click(debitButton);
 
     expect(debitButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
-
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "false");
     expect(screen.getByText("TXN-1001")).toBeInTheDocument();
     expect(screen.getByText("TXN-1003")).toBeInTheDocument();
     expect(screen.queryByText("TXN-1002")).not.toBeInTheDocument();
   });
 
+  it("opens the transfer workflow and completes a transfer", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await screen.findByRole("heading", { name: /good morning, nazmeen/i });
+
+    await user.click(screen.getByRole("button", { name: /transfer money/i }));
+    expect(screen.getByRole("dialog", { name: /transfer money/i })).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByLabelText("Beneficiary"), "BEN-001");
+    await user.type(screen.getByLabelText("Amount (INR)"), "5000");
+    await user.click(screen.getByRole("button", { name: "Review transfer" }));
+
+    expect(screen.getByText(/review before confirming/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Confirm transfer" }));
+
+    expect(await screen.findByRole("status", { name: /transfer successful/i })).toBeInTheDocument();
+    expect(screen.getByText(/₹5,000 sent to Aarav Mehta/i)).toBeInTheDocument();
+  });
+
   it("renders dashboard notification summary", async () => {
     render(<App />);
-
-    await screen.findByRole("heading", {
-      name: /good morning, nazmeen/i,
-    });
-
+    await screen.findByRole("heading", { name: /good morning, nazmeen/i });
     expect(screen.getByText("Notifications")).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();
   });
