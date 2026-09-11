@@ -11,7 +11,7 @@ describe("SecureBank dashboard", () => {
     expect(await screen.findByText(/available balance/i)).toBeInTheDocument();
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /september snapshot/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /smart insight/i })).toBeInTheDocument();
+    expect(screen.getByText("Smart insight")).toBeInTheDocument();
   });
 
   it("filters transactions and keeps the selected filter accessible", async () => {
