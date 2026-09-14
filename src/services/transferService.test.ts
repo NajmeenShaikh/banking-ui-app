@@ -33,12 +33,37 @@ describe("transfer service", () => {
       beneficiaryId: beneficiaries[0].id,
       amount: 5000,
       currency: "INR",
-      idempotencyKey: "test-key",
+      idempotencyKey: "success-test-key",
     });
 
     expect(receipt.status).toBe("SUCCESS");
     expect(receipt.amount).toBe(5000);
     expect(receipt.beneficiaryName).toBe("Aarav Mehta");
     expect(receipt.transactionId).toMatch(/^TXN-/);
+  });
+
+  it("rejects a duplicate idempotency key", async () => {
+    const request = {
+      sourceAccountId: account.id,
+      beneficiaryId: beneficiaries[1].id,
+      amount: 2500,
+      currency: "INR" as const,
+      idempotencyKey: "duplicate-test-key",
+    };
+
+    await createTransfer(request);
+    await expect(createTransfer(request)).rejects.toThrow("already been processed");
+  });
+
+  it("rejects incomplete transfer requests", async () => {
+    await expect(
+      createTransfer({
+        sourceAccountId: "",
+        beneficiaryId: beneficiaries[0].id,
+        amount: 100,
+        currency: "INR",
+        idempotencyKey: "missing-account-key",
+      }),
+    ).rejects.toThrow("missing required fields");
   });
 });
