@@ -16,11 +16,13 @@ A production-style, interactive banking dashboard built to demonstrate React fro
 - Pagination with reset-on-filter/search behavior
 - Transaction detail dialog
 - Loading, error and retry states
+- Runtime validation at the API/service boundary
+- Frontend-generated idempotency keys with duplicate-request protection in the demo service
 - Responsive desktop, tablet and mobile layouts
 - Semantic HTML and keyboard-visible focus states
 - Accessible status, alert, dialog and table patterns
 - Automated UI and service tests with Vitest + React Testing Library
-- ESLint and GitHub Actions quality checks
+- ESLint, strict TypeScript checks, GitHub Actions and Dependabot
 
 ## Premium UI experience
 
@@ -59,10 +61,12 @@ UI State + Derived State
    ↓
 Service / Domain Layer
    ↓
+Runtime Response Validation
+   ↓
 REST API / Banking Backend
 ```
 
-The current repository uses small mock services to keep the portfolio application self-contained. A production integration can replace the service implementations with authenticated REST calls without coupling API logic to the UI.
+The current repository uses small mock services to keep the portfolio application self-contained. Runtime guards demonstrate a key production boundary: TypeScript protects compile-time code, while API responses still need validation at runtime. A production integration can replace the mock service with authenticated REST calls without coupling API logic to the UI.
 
 ## Transfer workflow
 
@@ -72,10 +76,11 @@ The current repository uses small mock services to keep the portfolio applicatio
 4. Validate beneficiary, amount, transfer limit and available balance.
 5. Review the transfer.
 6. Confirm and show a processing state.
-7. Display a success receipt or recoverable failure state.
-8. Update the demo dashboard balance and transaction list locally after success.
+7. Send a unique idempotency key with the transfer request.
+8. Display a success receipt or recoverable failure state.
+9. Update the demo dashboard balance and transaction list locally after success.
 
-In a real banking system, backend authorization, transaction limits, idempotency and execution remain server responsibilities.
+The demo service rejects a previously processed idempotency key so repeated submissions are visible in tests. In a real banking system, the server must own idempotency enforcement, authorization, transaction limits, audit logging and final transaction execution; the frontend key is only part of that contract.
 
 ## Transaction experience
 
@@ -91,7 +96,7 @@ This provides practical interview examples for `useMemo`, derived state, stable 
 
 ## Testing strategy
 
-The suite covers dashboard rendering, accessible filtering, transaction search/detail behavior, pagination, transfer validation, transfer confirmation and the service boundary.
+The suite covers dashboard rendering, accessible filtering, transaction search/detail behavior, pagination, transfer validation, transfer confirmation, idempotency and runtime API response validation.
 
 Run locally:
 
@@ -99,6 +104,7 @@ Run locally:
 npm test
 npm run test:watch
 npm run lint
+npm run typecheck
 npm run build
 ```
 
@@ -124,15 +130,15 @@ interface TransferRequest {
 
 ## Security considerations
 
-This is a portfolio/demo UI and does not process real money or store credentials. In production, authorization, validation, transaction limits, idempotency, audit logging and sensitive-data protection must be enforced server-side.
+This is a portfolio/demo UI and does not process real money or store credentials. In production, authorization, validation, transaction limits, idempotency, audit logging and sensitive-data protection must be enforced server-side. The demo's runtime guards and idempotency set are intentionally not presented as substitutes for backend security controls.
 
 ## Quality checks
 
-GitHub Actions is configured to run linting, automated tests and the production build on pushes and pull requests targeting `main`.
+GitHub Actions runs linting, strict TypeScript checking, automated tests and the production build on pushes and pull requests targeting `main`. Dependabot is configured to monitor npm dependencies and GitHub Actions updates weekly.
 
 ## Portfolio positioning
 
-This project demonstrates the combination of visual product thinking and frontend engineering: polished fintech UI, reusable React components, realistic business workflows, derived state, accessibility, responsive behavior, automated testing and a clean API boundary.
+This project demonstrates the combination of visual product thinking and frontend engineering: polished fintech UI, reusable React components, realistic business workflows, derived state, runtime API validation, idempotency-aware transfer design, accessibility, responsive behavior, automated testing and a clean API boundary.
 
 ## Author
 
