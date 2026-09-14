@@ -1,4 +1,5 @@
 import type { DashboardData } from "../types/banking";
+import { parseDashboardData } from "./apiValidation";
 
 const dashboard: DashboardData = {
   account: {
@@ -22,5 +23,5 @@ const dashboard: DashboardData = {
 
 export async function fetchDashboard(): Promise<DashboardData> {
   await new Promise((resolve) => setTimeout(resolve, 350));
-  return dashboard;
+  return parseDashboardData(dashboard);
 }
