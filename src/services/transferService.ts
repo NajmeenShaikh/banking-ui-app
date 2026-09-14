@@ -28,6 +28,8 @@ export const beneficiaries: Beneficiary[] = [
   { id: "BEN-003", name: "Home Rent", maskedAccount: "•••• 8821", bankName: "HDFC Bank" },
 ];
 
+const processedIdempotencyKeys = new Set<string>();
+
 export function validateTransfer(account: Account, beneficiaryId: string, amountInput: string) {
   const amount = Number(amountInput);
 
@@ -40,10 +42,21 @@ export function validateTransfer(account: Account, beneficiaryId: string, amount
 }
 
 export async function createTransfer(request: TransferRequest): Promise<TransferReceipt> {
-  await new Promise((resolve) => setTimeout(resolve, 450));
-  const beneficiary = beneficiaries.find((item) => item.id === request.beneficiaryId);
+  if (!request.sourceAccountId || !request.idempotencyKey) {
+    throw new Error("Transfer request is missing required fields.");
+  }
+  if (processedIdempotencyKeys.has(request.idempotencyKey)) {
+    throw new Error("This transfer request has already been processed.");
+  }
 
+  const beneficiary = beneficiaries.find((item) => item.id === request.beneficiaryId);
   if (!beneficiary) throw new Error("Beneficiary could not be found.");
+  if (!Number.isFinite(request.amount) || request.amount <= 0) {
+    throw new Error("Transfer amount must be greater than zero.");
+  }
+
+  processedIdempotencyKeys.add(request.idempotencyKey);
+  await new Promise((resolve) => setTimeout(resolve, 450));
 
   return {
     transactionId: `TXN-${Date.now()}`,
